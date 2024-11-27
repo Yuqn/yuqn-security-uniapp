@@ -1,0 +1,28 @@
+# 系统文件
+.DS_Store
+
+# uniapp构建产物
+dist/
+
+# 开发工具生成的文件
+node_modules/
+
+# 环境配置文件
+.env
+
+# 日志文件
+*.log
+
+# 如果你使用了HBuilderX，可以忽略其项目文件
+.idea/
+.settings/
+.vscode/
+
+# 如果你使用了npm，可以忽略package-lock.json
+package-lock.json
+
+# 如果你使用了yarn，可以忽略yarn.lock
+yarn.lock
+
+# 忽略UniApp编译生成的小程序相关目录
+/unpackage/
