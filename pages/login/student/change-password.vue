@@ -115,7 +115,7 @@
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.cardSty{
 		width: 500rpx;
 		height: 520rpx; 

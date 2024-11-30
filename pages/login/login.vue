@@ -27,8 +27,10 @@
 <script setup lang="ts">
 	import {ref} from "vue";
 	import {onShow,onResize} from '@dcloudio/uni-app'
-	import {IdentityCode} from '../../utils/enums'
-	import {getOne} from '../../api/login'
+	// import {IdentityCode} from '../../utils/enums'
+	import {IdentityCode} from '@/utils/enums'
+	// import {getOne} from '../../api/login'
+	import {getOne} from '@/api/login'
 	
 	// 定义用户身份IDENTITYCODE，0为学生，1为教师
 	// const IDENTITYCODE = ref({
@@ -51,6 +53,7 @@
 	}
 	onShow(()=>{
 		console.log('onShow')
+		uni.setStorageSync("token","")
 		getOne('11').then((res)=>{
 			console.log('res',res)
 		}).catch((err=>{
@@ -60,7 +63,7 @@
 	
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.back{
 		background-color: #EDF3FC;
 		width: 750rpx;

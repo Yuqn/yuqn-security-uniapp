@@ -213,21 +213,6 @@
 				}
 			]
 		},
-		// studentCollegeMajorClass:{
-		// 	rules: [{
-		// 			required: true,
-		// 			errorMessage: '请输入信息',
-		// 		},
-		// 		{
-		// 			validateFunction: function(rule, value, data, callback) {
-		// 				if(value == ''){
-		// 					callback('不能为空')
-		// 				}
-		// 				return true;
-		// 			}
-		// 		}
-		// 	]
-		// },
 		societyGradeId:{
 			rules: [{
 					required: true,
@@ -349,7 +334,7 @@
 	
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	$widthrpx: 750rpx;
 	page{
 		background-color: #EDF3FC;

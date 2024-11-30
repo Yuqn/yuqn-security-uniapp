@@ -41,6 +41,9 @@
 	
 	// 跳转
 	function sendDataToParent(){
+		uni.redirectTo({
+			url:'/pages/home/index'
+		})
 		console.log("tiaoz1")
 	}
 	
@@ -58,7 +61,7 @@
 	
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	$widthrpx: 750rpx;
 	page{
 		background-color: #EDF3FC;

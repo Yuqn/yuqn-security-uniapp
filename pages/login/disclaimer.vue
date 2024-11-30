@@ -70,7 +70,7 @@
 	});
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	$widthrpx: 750rpx;
 	page{
 		background-color: #EDF3FC;

@@ -7,6 +7,30 @@
 			}
 		},
 		{
+			"path": "pages/404/index",
+			"style": {
+				"navigationBarTitleText": "未找到资源"
+			}
+		},
+		{
+			"path": "pages/society-list/search",
+			"style": {
+				"navigationBarTitleText": "社团搜索"
+			}
+		},
+		{
+			"path": "pages/society-list/society-list",
+			"style": {
+				"navigationBarTitleText": "社团列表"
+			}
+		},
+		{
+			"path": "pages/home/index",
+			"style": {
+				"navigationBarTitleText": "系统首页"
+			}
+		},
+		{
 			"path": "pages/login/student/index",
 			"style": {
 				"navigationBarTitleText": "学生登录"
