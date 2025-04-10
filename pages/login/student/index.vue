@@ -12,16 +12,17 @@
 							<uni-easyinput v-model="studentFormPhoneData.userPhone" placeholder="请输入手机号码" />
 						</uni-forms-item>
 						<uni-forms-item  name="phoneCode">
-							<view class="content-forms-input-sty">
+							<view class="content-forms-input-sty" >
 								<uni-easyinput v-model="studentFormPhoneData.phoneCode" placeholder="请输入验证码" />
 							</view>
-							<view class="getCodeSty">
-								<view class="getCodeWindowSty" @click="getCodeForPho"></view>
-								<uni-easyinput class="getCodeButtonSty" placeholder="获取验证码"/>
+							<view class="getCodeSty" style=" display: flex;justify-content: center; align-items: center;">
+								<view style="width: 90%; height: 90%; display: flex; justify-content: center; align-items: center; border: 1rpx solid gainsboro; font-size: 0.7rem;" @click="getCodeForPho">
+									<text style="color: #007aff;">获取验证码</text>
+								</view>
 							</view>
 						</uni-forms-item>
 						<uni-forms-item name="sliderResult">
-							<view class="sliderSty">
+							<view class="sliderSty"  >
 								<chenzuheng-verify-slider style="height: 100%;" @result='verifyResult' ref="verifyElement"></chenzuheng-verify-slider>
 							</view>
 						</uni-forms-item>
@@ -30,10 +31,10 @@
 				<view v-if="current === 1">
 					<uni-forms ref="studentForm" :modelValue="studentFormData" :rules="rules">
 						<uni-forms-item name="userName">
-							<uni-easyinput v-model="studentFormData.userName" placeholder="请输入账号" />
+							<uni-easyinput v-model="studentFormData.userName" placeholder="请输入学号" />
 						</uni-forms-item>
 						<uni-forms-item  name="password">
-							<uni-easyinput v-model="studentFormData.password" placeholder="请输入密码" />
+							<uni-easyinput v-model="studentFormData.password" type="password" placeholder="请输入密码" />
 						</uni-forms-item>
 						<uni-forms-item name="verificationCode" >
 							<view class="content-forms-input-sty">
@@ -52,15 +53,23 @@
 			</view>
 		</view>
 	</loginComponent>
+
+	<!-- 弹出层 -->
+	<uni-popup ref="popup" type="message">
+		<uni-popup-message type="warn" :message="message" :duration="2000"></uni-popup-message>
+	</uni-popup>
 </template>
 
 <script lang="ts" setup>
 	import { reactive,ref } from 'vue';
 	import loginComponent from '../components/login.vue';
+	import {onLoad} from '@dcloudio/uni-app';
 	import {userLogin} from '../../../api/login'
 	
 	// 创建一个响应式引用
 	const verifyElement = ref(null);
+	// tchuc
+	let message = ref("")
 	
 	// 关于切换登录方式的渲染数据
 	const items = reactive(['手机号码登录', '账号密码登录'])
@@ -73,6 +82,23 @@
 	let studentFormData = reactive({userName:'',password:'',verificationCode:''})
 	const studentForm = ref(null);
 	const studentFormPhone = ref(null);
+	
+	// 使用 ref 来获取 uni-popup 组件的引用
+	const popup = ref<InstanceType<typeof UniPopup> | null>(null);
+	
+	// 弹出层事件
+	function toggle() {
+	  if (popup.value) {
+	    popup.value.open(); // 直接调用 open 方法，不需要 this
+	  } else {
+	    console.warn('Popup ref is not yet set');
+	  }
+	}
+
+	// 接受页面参数
+	onLoad((option)=>{
+		console.log("identityCode.value",JSON.parse(decodeURIComponent(option.identityCode)))
+	})
 	
 	// 表单提交数据
 	let formData = reactive({
@@ -92,9 +118,17 @@
 	// 子组件方法
 	// 定义一个函数来处理从子组件接收到的事件和数据
 	function handleDataFromChild(data: { message: string, value: number }){
-		console.log(data.message)
 		console.log(data.value)
 		if(current.value==0){
+			// uni.navigateTo({
+			// 	url:"/pages/login/student/select-character"
+			// })
+			// 校验滚动条
+			if(!resultData.value){
+				message.value="请向右滑动滑块完成验证"
+				toggle();
+				return;
+			}
 			studentFormPhone.value.validate().then(res=>{
 				// 构造表单提交
 				formData = {
@@ -118,6 +152,9 @@
 						uni.navigateTo({
 							url:"/pages/login/student/select-character"
 						})
+					}else{
+						message.value = "登录失败，请重试"
+						toggle()
 					}
 				}).catch((err)=>{
 					console.log(err)
@@ -149,6 +186,9 @@
 						uni.navigateTo({
 							url:"/pages/login/student/select-character"
 						})
+					}else{
+						message.value = "登录失败，请重试"
+						toggle()
 					}
 				}).catch(err=>{
 					console.log('表单错误信息：', err);
@@ -177,7 +217,7 @@
 	
 	// 校验结果回调函数
 	function verifyResult(res){
-		resultData = res.flag;
+		resultData.value = res.flag;
 	}
 	/* 校验插件重置 */
  //    function verifyReset(){
@@ -254,6 +294,9 @@
 </script>
 
 <style lang="scss" scoped>
+	page{
+		background-color: #EDF3FC;
+	}
 	.cardSty{
 		width: 500rpx;
 		height: 570rpx; 

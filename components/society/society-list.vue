@@ -1,10 +1,10 @@
 <template>
 	<view class="back" :style="{height:height}">
 		<scroll-view scroll-y="true" class="scroll-Y scrollSty" :show-scrollbar="false">
-			<view class="cardSty" v-for="(item,key) in societyListData" :index="key" :key="item.id">
+			<view class="cardSty" v-for="(item,key) in societyListData" :index="key" :key="item.societyId">
 				<view class="cardTopSty" >
 					<view class="cardTopLeftSty" >
-						<text>社团名称：{{item.name}}</text>
+						<text>社团名称：{{item.societyName}}</text>
 					</view>
 					<view class="tag-view cardTopRightSty">
 						<view class="cardTopRightTipSty">
@@ -18,7 +18,7 @@
 							<view class="demo-uni-col dark">创建人：</view>
 						</uni-col>
 						<uni-col :span="16">
-							<view class="demo-uni-col light">{{item.createName}}</view>
+							<view class="demo-uni-col light">{{item.societyByName}}</view>
 						</uni-col>
 					</uni-row>
 					<uni-row class="demo-uni-row cardBodyRowSty">
@@ -42,7 +42,7 @@
 							<view class="demo-uni-col dark">社团副主席：</view>
 						</uni-col>
 						<uni-col :span="16">
-							<view class="demo-uni-col light">{{item.vicePresident}}</view>
+							<view class="demo-uni-col light">{{item.viceChairman}}</view>
 						</uni-col>
 					</uni-row>
 					<uni-row class="demo-uni-row cardBodyRowSty">
@@ -50,7 +50,7 @@
 							<view class="demo-uni-col dark">社团人数：</view>
 						</uni-col>
 						<uni-col :span="16">
-							<view class="demo-uni-col light">{{item.membersCount}}</view>
+							<view class="demo-uni-col light">{{item.societyUserCount}}</view>
 						</uni-col>
 					</uni-row>
 					<uni-row class="demo-uni-row cardBodyRowSty">
@@ -58,7 +58,7 @@
 							<view class="demo-uni-col dark">社团部门数：</view>
 						</uni-col>
 						<uni-col :span="16">
-							<view class="demo-uni-col light">{{item.departmentCount}}</view>
+							<view class="demo-uni-col light">{{item.societyDepartmentCount}}</view>
 						</uni-col>
 					</uni-row>
 					<uni-row class="demo-uni-row cardBodyRowSty">
@@ -69,12 +69,12 @@
 					<uni-row class="demo-uni-row cardBodyIntroduceRowSty">
 						<uni-col :span="24">
 							<scroll-view scroll-y="true" class="scroll-Y cardBodyIntroduceScrollRowSty">
-								{{item.introduce}}
+								{{item.societyIntroduce}}
 							</scroll-view>
 						</uni-col>
 					</uni-row>
 					<view class="cardBodyDetailsRowSty">
-						<button class="cardBodyDetailsBtnRowSty" @click="clickFun(item)">走进社团</button>
+						<button class="cardBodyDetailsBtnRowSty" @click="clickFun(item.societyId)">走进社团</button>
 					</view>
 				</uni-card>
 			</view>
@@ -83,7 +83,7 @@
 			<!-- <view style="height: 50rpx; line-height: 50rpx;flex-grow: 1;">
 				<text>第1/10页 共100条数据</text>
 			</view> -->
-			<view style="width: 100%;">
+			<view style="width: 100%; margin: 10rpx auto;">
 				<uni-pagination prev-text="前一页" next-text="后一页" :current='1' :total="100" :pageSize="10"  />
 			</view>
 		</view>
@@ -91,17 +91,31 @@
 </template>
 
 <script lang="ts" setup>
-	import {ref} from "vue";
-	import {onResize} from '@dcloudio/uni-app'
+	import {ref,onMounted} from "vue";
+	import {onResize,onLoad} from '@dcloudio/uni-app'
+	
+	// 定义 societyListData 的具体类型
+	interface SocietyListData {
+	  societyId: string;
+	  societyName: string;
+	  societyByName: string;
+	  createTime: string;
+	  chairman: string;
+	  viceChairman: string;
+	  societyUserCount: number;
+	  societyDepartmentCount: number;
+	  societyIntroduce: string;
+	}
 	
 	// 接收props
-	defineProps({
-	  societyListData: Object
-	})
+	// const props = defineProps({
+	//   societyListData: Object
+	// })
+	const props = defineProps<{ societyListData: SocietyListData[] }>();
 	
 	// 接收函数
 	const emit = defineEmits<{
-	  (e: 'data-to-parent',data: { result:Object }): void
+	  (e: 'data-to-parent',data: { result:string }): void
 	}>()
 	
 	// 定义屏幕高度
@@ -112,11 +126,18 @@
 		emit('data-to-parent', {result:e});
 	}
 	
+	// 生命周期钩子
+	onMounted(() => {
+	  // 在这里访问 props
+	  console.log('props.societyListData',props.societyListData);
+	});
+	
 	// 初始化界面高度
 	onResize(e => height.value = e.size.windowHeight + "px");
 	uni.getSystemInfo({
 		success: info => height.value = info.windowHeight - 44 + "px"
 	});
+	
 </script>
 
 <style lang="scss" scoped>
@@ -127,7 +148,7 @@
 		width: 750rpx;
 		.scrollSty{
 			width: 100%; 
-			height: 97%; 
+			height: 98%; 
 			margin-bottom: 15rpx;
 			margin-top: 15rpx;
 			.cardSty{
@@ -206,11 +227,11 @@
 		}
 		.pageSty{
 			 width: 100%; 
-			 height: 80rpx;
+			 // height: 80rpx;
 			 position: fixed;
 			 bottom: 0;
 			 background-color: #ffffff;
-			 padding-top: 18rpx;
+			 // padding-top: 18rpx;
 			 // display: flex; 
 			 // justify-content: center;
 			 // align-items: center;

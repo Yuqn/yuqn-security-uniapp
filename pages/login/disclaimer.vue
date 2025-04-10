@@ -1,15 +1,24 @@
 <template>
 	<view class="back" :style="{height:height}">
-		<view class="loginLogo">
-			<image src="../../static/image/disclaimerLogo.png"></image>
+		<view class="loginLogo" style="position: relative;">
+			<image src="../../static/image/bgFont.jpg"></image>
+			<!-- 文字描述 -->
+			<view style="position: absolute; top: 80rpx; left: 40rpx; width: 400rpx;height: 80rpx; ">
+				<view style="margin-bottom: 10rpx;">
+					<text style="color: #EDF3FC; font-size: 1.2rem; font-weight: 500;">系统使用须知</text>
+				</view>
+			</view>
 		</view>
 		<view class="disclaimerText">
 			<view class="textSty">
 				<text>使用须知</text>
 			</view>
-			<scroll-view class="centSty" scroll-y="true" scroll-top>
+			<scroll-view class="centSty scroll-Y" scroll-y="true" scroll-top :show-scrollbar="false"> 
 				<text>
-					授权人及被授权人在网上授权查询前须仔细阅读本须知：\n\n					一、网上授权查询采用实名制，授权人及被授权人必须持中华人民共和国居民身份证办理。\n\n					二、本查询范围为广州市辖区范围内不动产登记结果信息。\n\n					三、网上授权查询必须填写《不动产登记质量网上授权查询申请书》。\n\n					四、网上授权查询后，被授权人可以在授权时限内在线下载查询结果并加盖查询电子印章，查询结果与不动产登记资料查询窗口出具的查询证明信息一致，法律效力均等。\n\n					五、授权人承诺自愿授权他人查询其不动产登记信息，并承担由此产生的法律后果。\n\n					六、授权人阅读并勾选“确认授权”后，视为同意授权被授权人查询其不动产登记信息。\n\n
+					使用管理系统前须仔细阅读本须知：\n\n					一、所有社团成员需使用真实信息完成系统注册，包括但不限于姓名、学号/工号、联系方式等。\n\n					二、社团成员应妥善保管个人登录账号和密码，不得随意泄露给他人。\n\n					三、系统中存储的社团资料、活动计划、成员信息等均为内部资料，未经允许不得擅自外传。\n\n					四、对于系统使用中的任何问题或建议，成员可通过系统内的反馈渠道提交，管理员应及时响应处理。\n\n					五、活动申请需经社团负责人或指定审批人审核通过后，方可在系统内外正式发布。\n\n
+					六、对于违反本条例的行为，如未经授权访问系统、泄露敏感信息、恶意破坏数据等，将视情节轻重给予警告、限制权限、直至移除账号等处罚。\n\n
+					七、涉及违法行为的，将依法追究法律责任。\n\n
+					八、使用者阅读并勾选“我已阅读并同意”后，视为同意使用该系统并且同意系统的所有使用规范。\n\n
 				</text>
 			</scroll-view>
 			<view class="bottomSty">
@@ -24,22 +33,32 @@
 			<button type="primary" @click="goLogin()">确认</button>
 		</view>
 	</view>
+	<!-- 弹出层 -->
+	<view>
+		<uni-popup ref="popup" background-color="#fff" :mask-click="false">
+			<uni-popup-dialog title="提示" mode="base" content="是否已读并且同意使用说明?点击确认同意使用并进入系统!" :duration="2000" :before-close="true" @close="close" @confirm="confirm">
+			</uni-popup-dialog>
+		</uni-popup>
+	</view>
 </template>
 
 <script setup lang="ts">
-	import {ref} from "vue";
+	import {ref,reactive} from "vue";
 	import {onResize,onLoad} from '@dcloudio/uni-app';
 	import {IsCheck,IdentityCode} from '../../utils/enums'
 	
+	let isOk = ref('0')
 	// 定义屏幕高度
-	const height = ref("");
+	let height = ref("");
 	// 定义是否勾选，默认否
-	const isAgree = ref(IsCheck.NO);
+	let isAgree = ref(IsCheck.NO);
 	// 用户定义类型,0为学生，1为老师，-1为其他
-	const identityCode = ref(IdentityCode.ORDER);
+	let identityCode = ref(IdentityCode.ORDER);
 	// 接受页面参数
 	onLoad((option)=>{
+		console.log('option.identityCode',option.identityCode)
 		identityCode.value = JSON.parse(decodeURIComponent(option.identityCode));
+		console.log("identityCode.value",identityCode.value)
 	})
 	// 跳转登录界面
 	function goLogin(){
@@ -48,10 +67,11 @@
 			uni.navigateTo({url: '/pages/login/student/index?identityCode=' + encodeURIComponent(JSON.stringify(IdentityCode.STUDENT))})
 			console.log("准备跳转学生登录界面")
 		}else if(isAgree.value == IsCheck.YES && identityCode.value == IdentityCode.TEACHER){
-			uni.navigateTo({url:'/pages/login/teacher/index?identityCode=' + encodeURIComponent(JSON.stringify(IdentityCode.STUDENT))})
+			uni.navigateTo({url:'/pages/login/teacher/index?identityCode=' + encodeURIComponent(JSON.stringify(IdentityCode.TEACHER))})
 			console.log("准备跳转老师登录界面")
 		}
 		else{
+			toggle('center');
 			console.log("请勾选同意选项");
 		}
 	};
@@ -68,6 +88,54 @@
 	uni.getSystemInfo({
 		success: info => height.value = info.windowHeight - 44 + "px"
 	});
+	
+	// 使用 ref 来获取 uni-popup 组件的引用
+	const popup = ref<InstanceType<typeof UniPopup> | null>(null);
+	
+	// 定义弹出层数据
+	let popupData = reactive({
+		type:'center',
+		msgType: 'success',
+		messageText: '这是一条成功提示',
+		value: ''
+	})
+	
+	// 弹出层事件
+	function toggle(type: string) {
+	  popupData.type = type;
+	  if (popup.value) {
+	    popup.value.open(type); // 直接调用 open 方法，不需要 this
+	  } else {
+	    console.warn('Popup ref is not yet set');
+	  }
+	}
+	function close() {
+		// TODO 做一些其他的事情，before-close 为true的情况下，手动执行 close 才会关闭对话框
+		// ...
+		popup.value.close()
+		// this.$refs.popup.close()
+	}
+	/**
+	 * 点击确认按钮触发
+	 * @param {Object} done
+	 * @param {Object} value
+	 */
+	function confirm(value) {
+		// 输入框的值
+		console.log(value)
+		// 同意更新直接跳转
+		if(identityCode.value == IdentityCode.STUDENT){
+			// console.log("准备跳转学生登录界面")
+			uni.navigateTo({url: '/pages/login/student/index?identityCode=' + encodeURIComponent(JSON.stringify(IdentityCode.STUDENT))})
+			console.log("准备跳转学生登录界面")
+		}else if(identityCode.value == IdentityCode.TEACHER){
+			uni.navigateTo({url:'/pages/login/teacher/index?identityCode=' + encodeURIComponent(JSON.stringify(IdentityCode.STUDENT))})
+			console.log("准备跳转老师登录界面")
+		}
+		// this.$refs.popup.close()
+		popup.value.close()
+	}
+	
 </script>
 
 <style lang="scss" scoped>
@@ -86,9 +154,10 @@
 		}
 		.disclaimerText{
 			width: $widthrpx;
+			flex-grow: 1;
+			height: 500rpx;
 			display: flex; 
 			flex-direction: column;
-			flex-grow: 1;
 			.textSty{
 				height: 90rpx;
 				width: $widthrpx;
@@ -99,8 +168,10 @@
 			}
 			.centSty{
 				width: 680rpx;
-				height: 100%;
-				margin: auto;
+				flex-grow: 1;
+				// background-color: yellow;
+				margin: 0rpx auto 0rpx;
+				overflow: auto;
 				font-size: 26rpx;
 			}
 			.bottomSty{
@@ -115,8 +186,8 @@
 		.buttonSty{
 			width: 660rpx;
 			height: 120rpx;
-			padding-top: 20rpx;
-			margin: auto;
+			// padding-top: 20rpx;
+			margin: 5rpx auto 5rpx;
 		}
 	}
 	

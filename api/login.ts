@@ -43,3 +43,67 @@ export const userLogin = (params) => {
         header: {} 
 	})
 }
+// 教师登录接口
+export const teacherLogin = (params) => {
+	return request({
+		url: '/society/teacherLogin',
+		method: 'post',
+		data: params,
+        header: {} 
+	})
+}
+// 查询是否用户已经注册
+export const isRegister = (params) => {
+	return request({
+		url: '/society/isRegister',
+		method: 'get',
+		data: params,
+        header: {} 
+	})
+}
+// 更改密码
+export const changePassword = (params) => {
+	return request({
+		url: '/society/changePassword',
+		method: 'post',
+		data: params,
+        header: {} 
+	})
+}
+
+// 获取用户所有角色
+export const getRole = () => {
+	return request({
+		url: '/society/getRole',
+		method: 'get',
+		header: {} 
+	})
+}
+
+// 退出登录
+export const logout = () => {
+	return request({
+		url: '/society/logout',
+		method: 'post',
+        header: {} 
+	})
+}
+
+// 获取用户详细信息
+export const getUserDetail = () => {
+	return request({
+		url: '/society/getUserDetail',
+		method: 'get',
+		header: {} 
+	})
+}
+
+// 更改用户信息param
+export const updateUser = (params) => {
+	return request({
+		url: '/society/updateUser',
+		method: 'post',
+		data: params,
+		header: {} 
+	})
+}

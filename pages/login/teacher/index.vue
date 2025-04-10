@@ -12,7 +12,7 @@
 							<uni-easyinput v-model="teacherFormData.userName" placeholder="请输入账号" />
 						</uni-forms-item>
 						<uni-forms-item  name="password">
-							<uni-easyinput v-model="teacherFormData.password" placeholder="请输入密码" />
+							<uni-easyinput v-model="teacherFormData.password" type="password" placeholder="请输入密码" />
 						</uni-forms-item>
 						<uni-forms-item name="verificationCode" style="width: 100%;">
 							<view class="content-forms-input-sty">
@@ -37,7 +37,7 @@
 	import { reactive,ref } from 'vue';
 	import {onReady} from '@dcloudio/uni-app';
 	import loginComponent from '../components/login.vue';
-	import {userLogin} from '../../../api/login'
+	import {teacherLogin} from '../../../api/login'
 	
 	// 创建一个响应式引用
 	const verifyElement = ref(null);
@@ -80,15 +80,24 @@
 			formData.password = res.password;
 			formData.loginType = '1';
 			formData.identity = '1';
-			userLogin(formData)
+			teacherLogin(formData)
 			.then(res=>{
 				if(res.code == 200){
 					// 存储用户信息
 					uni.setStorageSync('token',res.result.token);
+					// 拼接其他绑定数据
+					let orderPerson = {
+					    societyBodyId: '',
+					    departmentId: '',
+						roleId: '3'
+					};
+					uni.setStorageSync('userRole',orderPerson)
 					// 跳转
-					// uni.navigateTo({
-					// 	url:'/pages/login/student/index?identityCode=' + encodeURIComponent(JSON.stringify(IdentityCode.STUDENT))
-					// })
+					uni.redirectTo({
+						url:'/pages/home/index'
+					})
+				}else{
+					console.log("没有该用户");
 				}
 			})
 			.catch(err=>{

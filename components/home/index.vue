@@ -1,7 +1,8 @@
 <template>
 	<view class="back" :style="{height:height}" style="position: absolute;">
 		<view class="topLogo">
-			<image src="/static/image/topLogo.svg" mode="aspectFill"></image>
+			<!-- <image src="/static/image/topLogo.svg" mode="aspectFill"></image> -->
+			<image src="/static/image/bgFive.jpg" mode="aspectFill"></image>
 		</view>
 		<view class="titleSty">
 			<view class="titleGreetingsSty">
@@ -18,10 +19,10 @@
 		<view class="roleFunSty">
 			<uni-card title="角色功能">
 				<uni-grid :column="4" :show-border="false" :square="false" @change="change">
-					<uni-grid-item v-for="(item ,index) in roleFunList" :index="index" :key="index">
+					<uni-grid-item v-for="(item ,index) in roleFunList" :index="index" :key="index" @click="clickRoleFun(item.id)">
 						<view class="grid-item-box">
 							<image class="image" src="/static/image/menu.svg" mode="aspectFill" />
-							<text class="text">{{item.text}}</text>
+							<text class="text">{{item.menuName}}</text>
 							<!-- <view v-if="item.badge" class="grid-dot">
 								<uni-badge :text="item.badge" :type="item.type" />
 							</view> -->
@@ -33,7 +34,7 @@
 		<view class="basicFunSty">
 			<uni-card title="基本功能">
 				<uni-grid :column="4" :show-border="false" :square="false" @change="change">
-					<uni-grid-item v-for="(item ,index) in basicFunList" :index="index" :key="index">
+					<uni-grid-item v-for="(item ,index) in basicFunList" :index="index" :key="index" @click="clickBasicFun(item.id)">
 						<view class="grid-item-box">
 							<image class="image" src="/static/image/menu.svg" mode="aspectFill" />
 							<text class="text">{{item.text}}</text>
@@ -62,23 +63,27 @@
 	  basicFunList:Object
 	})
 	
+	
 	// 接收函数
 	const emit = defineEmits<{
-	  (e: 'data-to-parent',data: { result:Object }): void
+	  (e: 'data-to-parent',data: { result:Object }): void,
+	  (e: 'click-role-fun',data: { result:Object }): void,
+	  (e: 'click-basic-fun',data: { result:Object }): void,
 	}>()
 	
 	// 菜单点击事件
 	function change(e) {
 		emit('data-to-parent', {result:e});
-		// console.log("点击触发",e)
-		// let { index } = e.detail
-		// this.list[index].badge && this.list[index].badge++
-
-		// uni.showToast({
-		// 	title: `点击第${index+1}个宫格`,
-		// 	icon: 'none'
-		// })
 	}
+	
+	// 角色菜单功能点击
+	function clickRoleFun(e){
+		emit('click-role-fun', {result:e});
+	}
+	function clickBasicFun(e){
+		emit('click-basic-fun', {result:e});
+	}
+	
 	// 初始化界面高度
 	onResize(e => height.value = e.size.windowHeight + "px");
 	uni.getSystemInfo({
@@ -97,25 +102,26 @@
 		.titleSty{
 			position: fixed; 
 			z-index: 100; 
-			color: #EDF3FC; 
-			margin-left: 40rpx;
+			color: #EDF3FC;
+			margin-left: 50rpx;
 			.titleGreetingsSty{
 				 width: 500rpx;
-				 height: 130rpx; 
-				 line-height: 170rpx; 
-				 font-size: 1.3rem;
+				 height: 140rpx; 
+				 line-height: 175rpx; 
+				 // background-color: yellow;
+				 font-size: 1.4rem;
 			}
 			.titleOrganizationSty{
 				 width: 500rpx;
-				 height: 60rpx; 
+				 height: 55rpx; 
 				 line-height: 60rpx; 
-				 font-size: 0.7rem;
+				 font-size: 0.8rem;
 			}
 			.titleIdentitySty{
 				width: 500rpx;
 				height: 40rpx; 
 				line-height: 40rpx; 
-				font-size: 0.6rem;
+				font-size: 0.75rem;
 			}
 		}
 		.topLogo{

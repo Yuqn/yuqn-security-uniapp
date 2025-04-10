@@ -12,18 +12,18 @@
 		<view class="searchViewSty">
 			<uni-forms class="searchViewFormSty" ref="valiForm">
 				<uni-forms-item>
-					<input class="uni-input" focus placeholder="输入搜索" />
+					<input class="uni-input" v-model="searchValue" focus placeholder="输入搜索" />
 				</uni-forms-item>
 			</uni-forms>
 		</view>
 		<view class="searchBtnSty">
-			<button type="primary" @click="submit('valiForm')" style="font-size: 0.9rem; height: 90rpx; line-height: 90rpx;">社团检索</button>
+			<button type="primary" @click="submit(searchValue)" style="font-size: 0.9rem; height: 90rpx; line-height: 90rpx;">社团检索</button>
 		</view>
 	</view>
 </template>
 
 <script lang="ts" setup>
-	import {ref} from "vue";
+	import {ref,reactive} from "vue";
 	import {onResize} from '@dcloudio/uni-app'
 	
 	// 定义屏幕高度
@@ -35,11 +35,14 @@
 		success: info => height.value = info.windowHeight - 44 + "px"
 	});
 	
+	// 定义搜索列表
+	let searchValue = ref("");
+	
 	// 提交表单
 	function submit(e){
 		console.log("e",e)
 		uni.navigateTo({
-			url:"/pages/society-list/society-list"
+			url:`/pages/society-list/society-list?societyName=${encodeURIComponent(e)}`
 		})
 	}
 </script>

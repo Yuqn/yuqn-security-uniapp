@@ -15,9 +15,14 @@
 							<view class="content-forms-input-sty">
 								<uni-easyinput v-model="verificationFormData.verificationCode" placeholder="请输入验证码" />
 							</view>
-							<view class="getCodeSty">
-								<view class="getCodeWindowSty" @click="getCodeForPho"></view>
+							<!-- <view class="getCodeSty">
+								<view class="getCodeWindowSty" @click="getCodeForPho()"></view>
 								<uni-easyinput class="getCodeButtonSty" placeholder="获取验证码"/>
+							</view> -->
+							<view class="getCodeSty" style=" display: flex;justify-content: center; align-items: center;">
+								<view style="width: 90%; height: 90%; display: flex; justify-content: center; align-items: center; border: 1rpx solid gainsboro; font-size: 0.7rem;" @click="getCodeForPho()">
+									<text style="color: #007aff;">获取验证码</text>
+								</view>
 							</view>
 						</uni-forms-item>
 						<uni-forms-item name="verificationCode">
@@ -38,6 +43,10 @@
 			</view>
 		</view>
 	</loginComponent>
+	<!-- 弹出层 -->
+		<uni-popup ref="popup" type="message">
+			<uni-popup-message type="warn" :message="message" :duration="2000"></uni-popup-message>
+		</uni-popup>
 </template>
 
 <script lang="ts" setup>
@@ -45,6 +54,7 @@
 	import {onReady,onLoad} from '@dcloudio/uni-app';
 	import loginComponent from '../components/login.vue';
 	import {IdentityCode} from '../../../utils/enums'
+	import {isRegister} from '../../../api/login'
 	
 	// 创建一个响应式引用
 	const verifyElement = ref(null);
@@ -63,12 +73,27 @@
 	const securityCode = ref('1a2e')
 	
 	// 保存滑块结果
-	let resultData = reactive({})
+	let resultData = ref(false)
 	
 	// 保存传递参数，0：用于注册，1：用于重置密码
 	const enumType = ref("")
 	
-	// 接受页面参数
+	// 使用 ref 来获取 uni-popup 组件的引用
+	const popup = ref<InstanceType<typeof UniPopup> | null>(null);
+	
+	// 
+	let message = ref("");
+	
+	// 弹出层事件
+	function toggle() {
+	  if (popup.value) {
+	    popup.value.open(); // 直接调用 open 方法，不需要 this
+	  } else {
+	    console.warn('Popup ref is not yet set');
+	  }
+	}
+	
+	// 接受页面参数（0，注册验证手机号码）
 	onLoad((option)=>{
 		enumType.value = JSON.parse(decodeURIComponent(option.enumType));
 	})
@@ -86,18 +111,80 @@
 		console.log(data.message)
 		console.log(data.value)
 		if(enumType.value == '0'){
+			// 校验滚动条
+			if(!resultData.value){
+				message.value = "请向右滑动滑块完成验证";
+				toggle();
+				return;
+			}
 			verificationForm.value.validate().then(res=>{
 				console.log('表单数据信息：', res);
-				uni.redirectTo({
-					url:"/pages/login/student/register-Information?phonenumber=13690087342" 
+				// 判断验证码
+				if(!(verificationFormData.verificationCode == '123456')){
+					message.value = "验证码错误，请输入正确验证码";
+					toggle();
+					return;
+				}
+				// 表单提交数据
+				const params = reactive({
+				  "phonenumber":verificationFormData.phonenumber
+				});
+				isRegister(params).then((e)=>{
+					if(e.code == 200){
+						// 校验结果没有注册过，跳转下一步
+						uni.redirectTo({
+							url:"/pages/login/student/register-Information?phonenumber=" + verificationFormData.phonenumber
+						})
+					}else{
+						console.log("已经注册过了,请前往登录")
+						message.value = "该号码已经注册过了,请前往登录";
+						toggle();
+					}
+				}).catch((err)=>{
+					console.log(err)
 				})
 			}).catch(err =>{
 				console.log('表单错误信息：', err);
 			})
 		}else{
-			uni.redirectTo({
-				url:"/pages/login/student/change-password"
+			// 校验滚动条
+			if(!resultData.value){
+				message.value = "请向右滑动滑块完成验证";
+				toggle();
+				return;
+			}
+			verificationForm.value.validate().then(res=>{
+				console.log('表单数据信息：', res);
+				// 判断验证码
+				if(!(verificationFormData.verificationCode == '123456')){
+					message.value = "验证码错误，请输入正确验证码";
+					toggle();
+					return;
+				}
+				// 表单提交数据
+				const params = reactive({
+				  "phonenumber":verificationFormData.phonenumber
+				});
+				isRegister(params).then((e)=>{
+					if(e.code == 200){
+						// 校验结果没有注册过，跳转下一步
+						console.log("没有该用户信息，请前往注册！")
+						message.value = "没有该用户信息，请前往注册！";
+						toggle();
+					}else{
+						// 存入缓存中
+						uni.setStorageSync('phonenumber', encodeURIComponent(JSON.stringify(verificationFormData.phonenumber)));
+						uni.redirectTo({
+							url:"/pages/login/student/change-password"
+						})
+					}
+				}).catch((err)=>{
+					console.log(err)
+				})
+			}).catch(err =>{
+				console.log('表单错误信息：', err);
 			})
+			
 		}
 	}
 	
@@ -118,17 +205,14 @@
 	
 	// 校验结果回调函数
 	function verifyResult(res){
-		console.log("res======" + res);
-		resultData = res;
-		console.log("resultData======" + JSON.stringify(resultData));
+		resultData.value = res.flag;
 	}
 	/* 校验插件重置 */
     function verifyReset(){
 		console.log("verifyElement" ,verifyElement.value)
 		verifyElement.value.reset();
 		/* 删除当前页面的数据 */
-		resultData = {};
-		console.log("resultData======" + JSON.stringify(resultData))
+		resultData.value = false
 	}
 	
 	// 自定义表单校验
@@ -178,7 +262,7 @@
 	
 	// 获取手机验证码
 	function getCodeForPho(){
-		console.log("点击获取验证码")
+		console.log("获取验证码为：",123456)
 	}
 	
 	// 登录跳转

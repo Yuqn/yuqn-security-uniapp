@@ -7,6 +7,138 @@
 			}
 		},
 		{
+			"path": "pages/application-record/index",
+			"style": {
+				"navigationBarTitleText": "申请记录"
+			}
+		},
+		{
+			"path": "pages/society-manage/memberChoose",
+			"style": {
+				"navigationBarTitleText": "社团角色选择"
+			}
+		},
+		{
+			"path": "pages/society-manage/member-add",
+			"style": {
+				"navigationBarTitleText": "成员选择"
+			}
+		},
+		{
+			"path": "pages/examine-and-approve/examine",
+			"style": {
+				"navigationBarTitleText": "申请审批"
+			}
+		},
+		{
+			"path": "pages/examine-and-approve/index",
+			"style": {
+				"navigationBarTitleText": "我的审批"
+			}
+		},
+		{
+			"path": "pages/society-manage/society-list",
+			"style": {
+				"navigationBarTitleText": "社团列表"
+			}
+		},
+		{
+			"path": "pages/department-manage/department-list",
+			"style": {
+				"navigationBarTitleText": "部门列表"
+			}
+		},
+		{
+			"path": "pages/society-manage/department-mkdir",
+			"style": {
+				"navigationBarTitleText": "创建部门"
+			}
+		},
+		{
+			"path": "pages/society-manage/society-update",
+			"style": {
+				"navigationBarTitleText": "社团编辑"
+			}
+		},
+		{
+			"path": "pages/join-department/department-detail",
+			"style": {
+				"navigationBarTitleText": "部门详情"
+			}
+		},
+		{
+			"path": "pages/login/student/updateUser",
+			"style": {
+				"navigationBarTitleText": "更改用户信息"
+			}
+		},
+		{
+			"path": "pages/society-manage/menu-list",
+			"style": {
+				"navigationBarTitleText": "社团管理"
+			}
+		},
+		{
+			"path": "pages/department-manage/member-add",
+			"style": {
+				"navigationBarTitleText": "新增成员"
+			}
+		},
+		{
+			"path": "pages/department-manage/department-update",
+			"style": {
+				"navigationBarTitleText": "部门编辑"
+			}
+		},
+		{
+			"path": "pages/department-manage/menu-list",
+			"style": {
+				"navigationBarTitleText": "部门管理"
+			}
+		},
+		{
+			"path": "pages/join-department/index",
+			"style": {
+				"navigationBarTitleText": "加入组织"
+			}
+		},
+		{
+			"path": "pages/society-mkdir/index",
+			"style": {
+				"navigationBarTitleText": "创建社团"
+			}
+		},
+		{
+			"path": "pages/department-manage/memberChoose",
+			"style": {
+				"navigationBarTitleText": "选择用户"
+			}
+		},
+		{
+			"path": "pages/department-manage/society-list",
+			"style": {
+				"navigationBarTitleText": "社团列表"
+			}
+		},
+		{
+			"path": "pages/society-list/member-detail",
+			"style": {
+				"navigationBarTitleText": "用户详情"
+			}
+		},
+		{
+			"path": "pages/society-list/member-list",
+			"style": {
+				"navigationBarTitleText": "成员列表"
+			}
+		},
+		{
+			"path": "pages/society-list/department-list",
+			"style": {
+				"navigationBarTitleText": "部门列表"
+			}
+		},
+		{
 			"path": "pages/404/index",
 			"style": {
 				"navigationBarTitleText": "未找到资源"

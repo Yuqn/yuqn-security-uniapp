@@ -3,7 +3,7 @@
     "appid" : "__UNI__87D9C4D",
     "description" : "测试",
     "versionName" : "1.0.0",
-    "versionCode" : "100",
+    "versionCode" : 101,
     "transformPx" : false,
     "app-plus" : {
         /* 5+App特有相关 */
@@ -58,5 +58,15 @@
         "usingComponents" : true
     },
     "vueVersion" : "3",
-    "fallbackLocale" : "zh-Hans"
+    "fallbackLocale" : "zh-Hans",
+    "h5" : {
+        "title" : "社团系统",
+        "router" : {
+            "mode" : "hash",
+            "base" : ""
+        },
+        "devServer" : {
+            "https" : false
+        }
+    }
 }

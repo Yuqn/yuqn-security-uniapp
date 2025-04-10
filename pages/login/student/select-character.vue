@@ -10,12 +10,13 @@
 			</text>
 		</view>
 		<view class="centSty">
-			<view style="width: 400rpx; margin: auto;">
+			<view style="width: 550rpx; margin: auto;">
 				<uni-data-select
 					v-model="value"
 					:localdata="range"
 					@change="change"
 					:clear="false"
+					v-if="isOk == '1'"
 				></uni-data-select>
 			</view>
 		</view>
@@ -27,29 +28,30 @@
 
 <script setup lang="ts">
 	import {reactive, ref} from "vue";
-	import {onResize} from '@dcloudio/uni-app';
+	import {onResize,onLoad} from '@dcloudio/uni-app';
+	import {getRole} from '../../../api/login'
 	
 	// 定义屏幕高度
-	const height = ref("");
+	let height = ref("");
 	
-	const value= ref("0")
-	const range=reactive([
-	  { value: 0, text: "篮球" },
-	  { value: 1, text: "足球" },
-	  { value: 2, text: "游泳" },
-	])
+	let value= ref(0)
+	
+	let range =reactive([])
+	
+	let isOk = ref('0')
 	
 	// 跳转
 	function sendDataToParent(){
+		uni.setStorageSync("userRole",range[value.value].other)
+		uni.setStorageSync("userIdentity",encodeURIComponent(JSON.stringify(range[value.value].text)))
 		uni.redirectTo({
-			url:'/pages/home/index'
+			url:`/pages/home/index`
 		})
-		console.log("tiaoz1")
 	}
 	
 	// 选择角色
 	function change(e){
-		console.log("e:", e);
+		value.value = e
     }
 
 	// 初始化界面高度
@@ -57,6 +59,70 @@
 	uni.getSystemInfo({
 		success: info => height.value = info.windowHeight - 44 + "px"
 	});
+	
+	// 获取用户对应角色列表
+	onLoad(()=>{
+		getRole().then((res)=>{
+			if(res.code == 200){
+				// 合并所有角色数组
+				let allRoles = [...res.result.societyRole, ...res.result.otherRole, ...res.result.departmentRole];
+				// 转换并去重（基于 roleId）
+				range.splice(0, range.length)
+				allRoles.forEach((value, index, array)=>{
+					let newBodyName = ' '
+					let newDepartmentName = ' '
+					let newValue = ' '
+					
+					// 拼接基本渲染数据
+					if(value.bodyName == null ){
+						newBodyName = '*'
+					}else{
+						newBodyName = value.bodyName
+					}
+					if(value.departmentName == null ){
+						newDepartmentName = '-*'
+					}else{
+						newDepartmentName = '-' + value.departmentName
+					}
+					if(value.roleName == "teacher"){value.roleName = '-教师'}
+					if(value.roleName == "chairman"){value.roleName = '-主席'}
+					if(value.roleName == "vice_chairman"){value.roleName = '-副主席'}
+					if(value.roleName == "minister"){value.roleName = '-部长'}
+					if(value.roleName == "vice_minister"){value.roleName = '-副部长'}
+					if(value.roleName == "member"){value.roleName = '-干事'}
+					if(value.roleName == "student"){value.roleName = '-学生'}
+					newValue = newBodyName + newDepartmentName + value.roleName
+					// 拼接其他绑定数据
+					let orderPerson = {
+					    societyBodyId: '',
+					    departmentId: '',
+						roleId: ''
+					};
+					if(value.societyBodyId == null ){
+						orderPerson.societyBodyId = ''
+					}else{
+						orderPerson.societyBodyId = value.societyBodyId
+					}
+					if(value.departmentId == null ){
+						orderPerson.departmentId = ''
+					}else{
+						orderPerson.departmentId = value.departmentId
+					}
+					orderPerson.roleId = value.roleId
+					let person = {
+					    value: index,
+					    text: newValue,
+						other: orderPerson
+					};
+					range.push(person)
+				})
+			}
+			value.value = 0
+			isOk.value = '1'
+		}).catch((err)=>{
+			console.log(err)
+		})
+	})
 
 	
 </script>

@@ -1,7 +1,14 @@
 <template>
 	<view class="back" :style="{height:height}">
-		<view class="loginLogo">
-			<image src="../../static/loginLogo.jpg"></image>
+		<view class="loginLogo" style="position: relative;">
+			<!-- <image src="../../static/loginLogo.jpg"></image> -->
+			<image src="../../static/image/bgThree.jpg"></image>
+			<!-- 文字描述 -->
+			<view style="position: absolute; top: 85rpx; left: 40rpx; width: 400rpx;height: 80rpx; ">
+				<view style="margin-bottom: 10rpx;">
+					<text style="color: #EDF3FC; font-size: 1.2rem; font-weight: 500;">请选择登录方式</text>
+				</view>
+			</view>
 		</view>
 		<view class="identitySelection">
 			<view class="identitySelectionSty studentIdentity" @click="goDisclaimer(IdentityCode.STUDENT)" > 
@@ -26,7 +33,7 @@
 
 <script setup lang="ts">
 	import {ref} from "vue";
-	import {onShow,onResize} from '@dcloudio/uni-app'
+	import {onShow,onResize,onLoad} from '@dcloudio/uni-app'
 	// import {IdentityCode} from '../../utils/enums'
 	import {IdentityCode} from '@/utils/enums'
 	// import {getOne} from '../../api/login'
@@ -51,26 +58,41 @@
 		console.log(even);
 		uni.navigateTo({url: '/pages/login/disclaimer?identityCode=' + encodeURIComponent(JSON.stringify(even))});
 	}
-	onShow(()=>{
-		console.log('onShow')
+	
+	onLoad(()=>{
 		uni.setStorageSync("token","")
-		getOne('11').then((res)=>{
-			console.log('res',res)
-		}).catch((err=>{
-			console.log
-		}))
+		uni.setStorageSync("role","")
 	})
+	// onShow(()=>{
+	// 	console.log('onShow')
+	// 	uni.setStorageSync("token","")
+	// 	uni.setStorageSync("role","")
+	// 	console.log("uni.getSystemInfoSync()",uni.getSystemInfoSync())
+	// 	getOne('11').then((res)=>{
+	// 		console.log('res',res)
+	// 	}).catch((err=>{
+	// 		console.log
+	// 	}))
+	// })
 	
 </script>
 
 <style lang="scss" scoped>
-	.back{
+	page{
 		background-color: #EDF3FC;
+	}
+	.back{
 		width: 750rpx;
-		height: 100vh;
-		.loginLogo image{
+		// height: 140vh;
+		// background-color: yellow;
+		.loginLogo{
 			width: 750rpx;
-			height: 230rpx;
+			height: 220rpx;
+			image{
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
 		}
 		.identitySelection{
 			.identitySelectionSty{

@@ -1,5 +1,7 @@
 // 全局请求封装
 const base_url:string = 'http://localhost:8080'
+// const base_url_dev:string = 'http://81.71.99.181/api'
+const base_url_dev:string = 'http://localhost:8080'
 // 请求超出时间
 const timeout:number = 5000
  
@@ -22,7 +24,7 @@ export default (params) => {
 	// }
 	return new Promise((resolve, reject) => {
 		uni.request({
-			url: base_url + url,
+			url: base_url_dev + url,
 			method: method,
 			header: header,
 			data: data,
@@ -37,6 +39,20 @@ export default (params) => {
 				} else {
 					uni.clearStorageSync()
 					switch (res.statusCode) {
+						case 302:
+							uni.showModal({
+								title: "提示",
+								content: "登录过期，创新登录",
+								showCancel: false,
+								success() {
+									setTimeout(() => {
+										uni.redirectTo({
+											url: "/pages/login/index",
+										})
+									}, 1000);
+								},
+							});
+							break;
 						case 401:
 							uni.showModal({
 								title: "提示",
@@ -58,16 +74,19 @@ export default (params) => {
 							})
 							break;
 						default:
-							uni.showToast({
-								title: '请重试...',
-								duration: 2000,
+							// uni.showToast({
+							// 	title: '请重试...',
+							// 	duration: 2000,
+							// })
+							uni.navigateTo({
+								url:"/pages/404/index"
 							})
 							break;
 					}
 				}
 			},
 			fail(err) {
-				console.log(err)
+				console.log("err",err)
 				if (err.errMsg.indexOf('request:fail') !== -1) {
 					uni.showToast({
 						title: '网络异常',

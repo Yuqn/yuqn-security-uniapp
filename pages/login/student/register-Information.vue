@@ -1,63 +1,66 @@
 <template>
 	<view class="back" :style="{height:height}">
-		<view>
-			<!-- 提示信息弹窗 -->
-			<uni-popup ref="message" type="message">
-				<uni-popup-message :type="msgType" :message="messageText" :duration="2000"></uni-popup-message>
-			</uni-popup>
-		</view>
 		<view class="headSty">
 			<image src="../../../static/image/loginLogo.png"></image>
 		</view>
-		<view class="centSty">
-			<uni-card  margin="30rpx">
-				<uni-forms ref="registerForm" :modelValue="registerFormData">
-					<uni-forms-item label="学号" name="studentId">
-						<uni-easyinput v-model="registerFormData.studentId" placeholder="请输入学号"/>
-					</uni-forms-item>
-					<uni-forms-item label="姓名" name="studentName">
-						<uni-easyinput v-model="registerFormData.studentName" placeholder="请输入姓名"/>
-					</uni-forms-item>
-					<uni-forms-item label="密码" name="studentPassword">
-						<uni-easyinput type="password" v-model="registerFormData.studentPassword" placeholder="请输入密码"/>
-					</uni-forms-item>
-					<uni-forms-item label="重输密码" name="studentPasswordRepeat">
-						<uni-easyinput v-model="registerFormData.studentPasswordRepeat" placeholder="请重新输入密码"/>
-					</uni-forms-item>
-					<uni-forms-item label="身份证" name="studentCard">
-						<uni-easyinput v-model="registerFormData.studentCard" placeholder="请输入身份证号码"/>
-					</uni-forms-item>
-					<uni-forms-item label="年级" name="societyGradeId">
-						<uni-data-select
-						        v-model="registerFormData.societyGradeId"
-						        :localdata="grade"
-						        @change="change"
-						        :clear="false"
-						      ></uni-data-select>
-					</uni-forms-item>
-					<uni-forms-item label="班级" name="studentCollegeMajorClass">
-						<uni-data-picker placeholder="请选择班级" popup-title="请选择班级信息" :localdata="dataTree" v-model="classes"
-							@change="onchange" @nodeclick="onnodeclick" @popupopened="onpopupopened" @popupclosed="onpopupclosed">
-						</uni-data-picker>
-					</uni-forms-item>
-					<uni-forms-item label="手机号码" name="studentPhone">
-						<uni-easyinput v-model="registerFormData.studentPhone" disabled/>
-					</uni-forms-item>
-					<uni-forms-item label="邮箱" name="studentEmail">
-						<uni-easyinput v-model="registerFormData.studentEmail" placeholder="请输入邮箱"/>
-					</uni-forms-item>
-					<uni-forms-item label="性别" name="studentSex">
-						<uni-data-checkbox v-model="registerFormData.studentSex" :localdata="sexs" />
-					</uni-forms-item>
-				</uni-forms>
-				<view class="buttonTipSty">
-					<text>已有账号？<text style="color: #007aff;" @click="goLogin">去登录-> </text></text>
-				</view>
-			</uni-card>
-		</view>
+		<scroll-view scroll-y="true" class="scroll-Y scrollSty" :show-scrollbar="false">
+			<view class="centSty" >
+				<uni-card style="margin-top: 0;">
+					<uni-forms ref="registerForm" :modelValue="registerFormData">
+						<uni-forms-item label="学号" name="studentId">
+							<uni-easyinput v-model="registerFormData.studentId" placeholder="请输入学号"/>
+						</uni-forms-item>
+						<uni-forms-item label="姓名" name="studentName">
+							<uni-easyinput v-model="registerFormData.studentName" placeholder="请输入姓名"/>
+						</uni-forms-item>
+						<uni-forms-item label="密码" name="studentPassword">
+							<uni-easyinput type="password" v-model="registerFormData.studentPassword" placeholder="请输入密码"/>
+						</uni-forms-item>
+						<uni-forms-item label="重输密码" name="studentPasswordRepeat">
+							<uni-easyinput v-model="registerFormData.studentPasswordRepeat" placeholder="请重新输入密码"/>
+						</uni-forms-item>
+						<uni-forms-item label="身份证" name="studentCard">
+							<uni-easyinput v-model="registerFormData.studentCard" placeholder="请输入身份证号码"/>
+						</uni-forms-item>
+						<uni-forms-item label="年级" name="societyGradeId">
+							<uni-data-select
+							        v-model="registerFormData.societyGradeId"
+							        :localdata="grade"
+							        @change="change"
+							        :clear="false"
+							      ></uni-data-select>
+						</uni-forms-item>
+						<uni-forms-item label="班级" name="studentCollegeMajorClass">
+							<uni-data-picker placeholder="请选择班级" popup-title="请选择班级信息" :localdata="dataTree" v-model="classes"
+								@change="onchange" @nodeclick="onnodeclick" @popupopened="onpopupopened" @popupclosed="onpopupclosed">
+							</uni-data-picker>
+						</uni-forms-item>
+						<uni-forms-item label="手机号码" name="studentPhone">
+							<uni-easyinput v-model="registerFormData.studentPhone" disabled/>
+						</uni-forms-item>
+						<uni-forms-item label="邮箱" name="studentEmail">
+							<uni-easyinput v-model="registerFormData.studentEmail" placeholder="请输入邮箱"/>
+						</uni-forms-item>
+						<uni-forms-item label="性别" name="studentSex">
+							<uni-data-checkbox v-model="registerFormData.studentSex" :localdata="sexs" />
+						</uni-forms-item>
+					</uni-forms>
+					<view class="buttonTipSty">
+						<text>已有账号？<text style="color: #007aff;" @click="goLogin">去登录-> </text></text>
+					</view>
+				</uni-card>
+			</view>
+		</scroll-view>
+		
 		<view class="buttonSty">
 			<button type="primary" @click="submit('customForm')">提交</button>
 		</view>
+	</view>
+	<view>
+		<!-- 提示信息弹窗 -->
+		<uni-popup ref="message" type="message">
+			<uni-popup-message :type="msgType" :message="messageText" :duration="2000"></uni-popup-message>
+		</uni-popup>
 	</view>
 </template>
 
@@ -73,7 +76,7 @@
 	// 初始化界面高度
 	onResize(e => height.value = e.size.windowHeight + "px");
 	uni.getSystemInfo({
-		success: info => height.value = info.windowHeight - 44 + "px"
+		success: info => height.value = info.windowHeight  + "px"
 	});
 	
 	// 用户数据集
@@ -347,23 +350,27 @@
 		.headSty image{
 			width: $widthrpx;
 			height: 250rpx;
+			margin-bottom: 10rpx;
 		}
-		.centSty{
-			width: $widthrpx;
+		.scrollSty{
+			// background-color: yellow;
 			flex-grow: 1;
-			.buttonTipSty{
-				color: #e8e8e8;
-				width: 100%; 
-				height: 45rpx;
-				font-size: 0.6rem;
-				text-align: center;
+			.centSty{
+				width: $widthrpx;
+				height: 800rpx;
+				.buttonTipSty{
+					color: #e8e8e8;
+					width: 100%; 
+					height: 45rpx;
+					font-size: 0.6rem;
+					text-align: center;
+				}
 			}
 		}
 		.buttonSty{
 			width: 660rpx;
 			height: 100rpx;
-			padding-top: 20rpx;
-			margin: auto;
+			margin: 20rpx auto 20rpx;
 		}
 	}
 	

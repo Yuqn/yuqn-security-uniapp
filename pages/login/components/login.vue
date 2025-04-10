@@ -1,7 +1,16 @@
 <template>
 	<view class="back" :style="{height:height}">
-		<view class="headSty">
+		<view class="headSty" style="position: relative;">
 			<image src="../../../static/image/loginLogo.png"></image>
+			<!-- 文字描述 -->
+			<view style="position: absolute; left: 50rpx; top: 77rpx; width: 400rpx;height: 120rpx; ">
+				<view style="margin-bottom: 10rpx;">
+					<text style="color: #EDF3FC; font-size: 1.2rem; font-weight: 500;">进行身份认证!!!</text>
+				</view>
+				<view>
+					<text style="color: #EDF3FC; font-size: 0.8rem; font-weight: 500;">请输入信息验证您的身份信息</text>
+				</view>
+			</view>
 		</view>
 		<view class="centSty">
 			<uni-card  margin="60rpx">
